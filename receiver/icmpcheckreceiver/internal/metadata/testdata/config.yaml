@@ -16,6 +16,8 @@ all_set:
       enabled: true
     net.peer.name:
       enabled: true
+    net.traffic.class:
+      enabled: true
 none_set:
   metrics:
     ping.loss.ratio:
@@ -33,6 +35,8 @@ none_set:
       enabled: false
     net.peer.name:
       enabled: false
+    net.traffic.class:
+      enabled: false
 filter_set_include:
   resource_attributes:
     net.peer.ip:
@@ -40,6 +44,10 @@ filter_set_include:
       metrics_include:
         - regexp: ".*"
     net.peer.name:
+      enabled: true
+      metrics_include:
+        - regexp: ".*"
+    net.traffic.class:
       enabled: true
       metrics_include:
         - regexp: ".*"
@@ -53,3 +61,7 @@ filter_set_exclude:
       enabled: true
       metrics_exclude:
         - strict: "net.peer.name-val"
+    net.traffic.class:
+      enabled: true
+      metrics_exclude:
+        - regexp: ".*"

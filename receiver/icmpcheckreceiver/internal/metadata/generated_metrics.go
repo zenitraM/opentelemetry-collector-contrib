@@ -347,6 +347,12 @@ func NewMetricsBuilder(mbc MetricsBuilderConfig, settings receiver.Settings, opt
 	if mbc.ResourceAttributes.NetPeerName.MetricsExclude != nil {
 		mb.resourceAttributeExcludeFilter["net.peer.name"] = filter.CreateFilter(mbc.ResourceAttributes.NetPeerName.MetricsExclude)
 	}
+	if mbc.ResourceAttributes.NetTrafficClass.MetricsInclude != nil {
+		mb.resourceAttributeIncludeFilter["net.traffic.class"] = filter.CreateFilter(mbc.ResourceAttributes.NetTrafficClass.MetricsInclude)
+	}
+	if mbc.ResourceAttributes.NetTrafficClass.MetricsExclude != nil {
+		mb.resourceAttributeExcludeFilter["net.traffic.class"] = filter.CreateFilter(mbc.ResourceAttributes.NetTrafficClass.MetricsExclude)
+	}
 
 	for _, op := range options {
 		op.apply(mb)

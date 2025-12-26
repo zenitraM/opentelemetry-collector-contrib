@@ -33,8 +33,9 @@ func TestMetricsBuilderConfig(t *testing.T) {
 					PingRttStddev: MetricConfig{Enabled: true},
 				},
 				ResourceAttributes: ResourceAttributesConfig{
-					NetPeerIP:   ResourceAttributeConfig{Enabled: true},
-					NetPeerName: ResourceAttributeConfig{Enabled: true},
+					NetPeerIP:       ResourceAttributeConfig{Enabled: true},
+					NetPeerName:     ResourceAttributeConfig{Enabled: true},
+					NetTrafficClass: ResourceAttributeConfig{Enabled: true},
 				},
 			},
 		},
@@ -49,8 +50,9 @@ func TestMetricsBuilderConfig(t *testing.T) {
 					PingRttStddev: MetricConfig{Enabled: false},
 				},
 				ResourceAttributes: ResourceAttributesConfig{
-					NetPeerIP:   ResourceAttributeConfig{Enabled: false},
-					NetPeerName: ResourceAttributeConfig{Enabled: false},
+					NetPeerIP:       ResourceAttributeConfig{Enabled: false},
+					NetPeerName:     ResourceAttributeConfig{Enabled: false},
+					NetTrafficClass: ResourceAttributeConfig{Enabled: false},
 				},
 			},
 		},
@@ -86,15 +88,17 @@ func TestResourceAttributesConfig(t *testing.T) {
 		{
 			name: "all_set",
 			want: ResourceAttributesConfig{
-				NetPeerIP:   ResourceAttributeConfig{Enabled: true},
-				NetPeerName: ResourceAttributeConfig{Enabled: true},
+				NetPeerIP:       ResourceAttributeConfig{Enabled: true},
+				NetPeerName:     ResourceAttributeConfig{Enabled: true},
+				NetTrafficClass: ResourceAttributeConfig{Enabled: true},
 			},
 		},
 		{
 			name: "none_set",
 			want: ResourceAttributesConfig{
-				NetPeerIP:   ResourceAttributeConfig{Enabled: false},
-				NetPeerName: ResourceAttributeConfig{Enabled: false},
+				NetPeerIP:       ResourceAttributeConfig{Enabled: false},
+				NetPeerName:     ResourceAttributeConfig{Enabled: false},
+				NetTrafficClass: ResourceAttributeConfig{Enabled: false},
 			},
 		},
 	}

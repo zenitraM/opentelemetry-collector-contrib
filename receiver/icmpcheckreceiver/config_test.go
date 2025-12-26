@@ -48,6 +48,42 @@ func TestConfigValidate(t *testing.T) {
 			expectedUniqueErrs: []error{},
 			expectedCount:      0,
 		},
+		{
+			name:               "valid traffic class zero",
+			cfg:                &Config{Targets: []PingTarget{{Host: "1.1.1.1", TrafficClass: intPtr(0)}}},
+			expectedUniqueErrs: []error{},
+			expectedCount:      0,
+		},
+		{
+			name:               "valid traffic class 46",
+			cfg:                &Config{Targets: []PingTarget{{Host: "1.1.1.1", TrafficClass: intPtr(46)}}},
+			expectedUniqueErrs: []error{},
+			expectedCount:      0,
+		},
+		{
+			name:               "valid traffic class 255",
+			cfg:                &Config{Targets: []PingTarget{{Host: "1.1.1.1", TrafficClass: intPtr(255)}}},
+			expectedUniqueErrs: []error{},
+			expectedCount:      0,
+		},
+		{
+			name:               "invalid traffic class negative",
+			cfg:                &Config{Targets: []PingTarget{{Host: "1.1.1.1", TrafficClass: intPtr(-1)}}},
+			expectedUniqueErrs: []error{errInvalidTrafficClass},
+			expectedCount:      1,
+		},
+		{
+			name:               "invalid traffic class too large",
+			cfg:                &Config{Targets: []PingTarget{{Host: "1.1.1.1", TrafficClass: intPtr(256)}}},
+			expectedUniqueErrs: []error{errInvalidTrafficClass},
+			expectedCount:      1,
+		},
+		{
+			name:               "nil traffic class is valid",
+			cfg:                &Config{Targets: []PingTarget{{Host: "1.1.1.1", TrafficClass: nil}}},
+			expectedUniqueErrs: []error{},
+			expectedCount:      0,
+		},
 	}
 
 	for _, tt := range tests {
@@ -80,4 +116,8 @@ func TestConfigValidate(t *testing.T) {
 			}
 		})
 	}
+}
+
+func intPtr(i int) *int {
+	return &i
 }

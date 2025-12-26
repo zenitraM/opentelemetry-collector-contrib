@@ -91,6 +91,7 @@ func TestMetricsBuilder(t *testing.T) {
 			rb := mb.NewResourceBuilder()
 			rb.SetNetPeerIP("net.peer.ip-val")
 			rb.SetNetPeerName("net.peer.name-val")
+			rb.SetNetTrafficClass(17)
 			res := rb.Emit()
 			metrics := mb.Emit(WithResource(res))
 

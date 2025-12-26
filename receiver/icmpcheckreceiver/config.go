@@ -14,8 +14,9 @@ import (
 )
 
 var (
-	errMissingTarget     = errors.New("must specify at least one target")
-	errMissingTargetHost = errors.New("target host is required")
+	errMissingTarget       = errors.New("must specify at least one target")
+	errMissingTargetHost   = errors.New("target host is required")
+	errInvalidTrafficClass = errors.New("traffic_class must be between 0 and 255")
 )
 
 type Config struct {
@@ -31,6 +32,7 @@ type PingTarget struct {
 	PingCount    int           `mapstructure:"ping_count,omitempty"`
 	PingTimeout  time.Duration `mapstructure:"ping_timeout,omitempty"`
 	PingInterval time.Duration `mapstructure:"ping_interval,omitempty"`
+	TrafficClass *int          `mapstructure:"traffic_class,omitempty"`
 }
 
 func (c *Config) Validate() error {
@@ -43,6 +45,11 @@ func (c *Config) Validate() error {
 	for _, target := range c.Targets {
 		if target.Host == "" {
 			err = multierr.Append(err, errMissingTargetHost)
+		}
+		if target.TrafficClass != nil {
+			if *target.TrafficClass < 0 || *target.TrafficClass > 255 {
+				err = multierr.Append(err, errInvalidTrafficClass)
+			}
 		}
 	}
 

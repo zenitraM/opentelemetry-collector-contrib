@@ -58,3 +58,4 @@ Standard deviation of round-trip time in milliseconds.
 | ---- | ----------- | ------ | ------- |
 | net.peer.ip | The IP address of the host being pinged. | Any Str | true |
 | net.peer.name | The hostname of the host being pinged. | Any Str | true |
+| net.traffic.class | The ToS/traffic class value used for ICMP packets (0-255). | Any Int | true |

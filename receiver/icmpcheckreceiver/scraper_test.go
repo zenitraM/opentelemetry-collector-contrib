@@ -113,7 +113,7 @@ func TestPingSuccess(t *testing.T) {
 	}
 	results := make(chan pingResult, 1)
 
-	go ping(pinger, results)
+	go ping(pinger, nil, results)
 
 	select {
 	case result := <-results:
@@ -135,7 +135,7 @@ func TestPingError(t *testing.T) {
 	}
 	results := make(chan pingResult, 1)
 
-	go ping(pinger, results)
+	go ping(pinger, nil, results)
 
 	select {
 	case result := <-results:
@@ -297,10 +297,11 @@ func TestIcmpCheckScraperScrape(t *testing.T) {
 				targetHost: target.Host,
 				targetIP:   "212.133.0.1",
 				stats: &pingStats{
-					minRtt:    10 * time.Millisecond,
-					maxRtt:    20 * time.Millisecond,
-					avgRtt:    15 * time.Millisecond,
-					lossRatio: 0.0,
+					minRtt:         10 * time.Millisecond,
+					maxRtt:         20 * time.Millisecond,
+					avgRtt:         15 * time.Millisecond,
+					lossRatio:      0.0,
+					individualRtts: []time.Duration{10 * time.Millisecond, 15 * time.Millisecond, 20 * time.Millisecond},
 				},
 				err: nil,
 			},
@@ -316,17 +317,32 @@ func TestIcmpCheckScraperScrape(t *testing.T) {
 
 	// Verify that metrics were generated
 	assert.Positive(t, metrics.DataPointCount())
-	assert.Equal(t, 2, metrics.ResourceMetrics().Len())
+	// 2 targets * 2 ResourceMetrics (1 for gauges, 1 for histograms) = 4 total
+	assert.Equal(t, 4, metrics.ResourceMetrics().Len())
 
-	for idx := range cfg.Targets {
+	// Check first 2 ResourceMetrics (gauge metrics from MetricsBuilder)
+	for idx := 0; idx < len(cfg.Targets); idx++ {
 		rm := metrics.ResourceMetrics().At(idx)
 
 		_, hasNameAttr := rm.Resource().Attributes().Get("net.peer.name")
-		_, hasIPAttr := rm.Resource().Attributes().Get("net.peer.name")
+		_, hasIPAttr := rm.Resource().Attributes().Get("net.peer.ip")
 		assert.True(t, hasNameAttr)
 		assert.True(t, hasIPAttr)
 
 		ilm := rm.ScopeMetrics().At(0)
-		assert.Equal(t, 5, ilm.Metrics().Len())
+		assert.Equal(t, 5, ilm.Metrics().Len()) // 5 gauge metrics
+	}
+
+	// Check last 2 ResourceMetrics (histogram metrics)
+	for idx := len(cfg.Targets); idx < metrics.ResourceMetrics().Len(); idx++ {
+		rm := metrics.ResourceMetrics().At(idx)
+
+		_, hasNameAttr := rm.Resource().Attributes().Get("net.peer.name")
+		_, hasIPAttr := rm.Resource().Attributes().Get("net.peer.ip")
+		assert.True(t, hasNameAttr)
+		assert.True(t, hasIPAttr)
+
+		ilm := rm.ScopeMetrics().At(0)
+		assert.Equal(t, 2, ilm.Metrics().Len()) // 2 histogram metrics (RTT and loss)
 	}
 }

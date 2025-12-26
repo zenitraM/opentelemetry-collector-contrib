@@ -83,8 +83,9 @@ func (rac *ResourceAttributeConfig) Unmarshal(parser *confmap.Conf) error {
 
 // ResourceAttributesConfig provides config for icmpcheckreceiver resource attributes.
 type ResourceAttributesConfig struct {
-	NetPeerIP   ResourceAttributeConfig `mapstructure:"net.peer.ip"`
-	NetPeerName ResourceAttributeConfig `mapstructure:"net.peer.name"`
+	NetPeerIP       ResourceAttributeConfig `mapstructure:"net.peer.ip"`
+	NetPeerName     ResourceAttributeConfig `mapstructure:"net.peer.name"`
+	NetTrafficClass ResourceAttributeConfig `mapstructure:"net.traffic.class"`
 }
 
 func DefaultResourceAttributesConfig() ResourceAttributesConfig {
@@ -93,6 +94,9 @@ func DefaultResourceAttributesConfig() ResourceAttributesConfig {
 			Enabled: true,
 		},
 		NetPeerName: ResourceAttributeConfig{
+			Enabled: true,
+		},
+		NetTrafficClass: ResourceAttributeConfig{
 			Enabled: true,
 		},
 	}

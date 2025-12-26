@@ -35,6 +35,13 @@ func (rb *ResourceBuilder) SetNetPeerName(val string) {
 	}
 }
 
+// SetNetTrafficClass sets provided value as "net.traffic.class" attribute.
+func (rb *ResourceBuilder) SetNetTrafficClass(val int64) {
+	if rb.config.NetTrafficClass.Enabled {
+		rb.res.Attributes().PutInt("net.traffic.class", val)
+	}
+}
+
 // Emit returns the built resource and resets the internal builder state.
 func (rb *ResourceBuilder) Emit() pcommon.Resource {
 	r := rb.res

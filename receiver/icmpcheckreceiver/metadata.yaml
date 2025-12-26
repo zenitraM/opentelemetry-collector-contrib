@@ -17,6 +17,10 @@ resource_attributes:
     enabled: true
     description: The hostname of the host being pinged.
     type: string
+  net.traffic.class:
+    enabled: true
+    description: The ToS/traffic class value used for ICMP packets (0-255).
+    type: int
 
 metrics:
   ping.loss.ratio:

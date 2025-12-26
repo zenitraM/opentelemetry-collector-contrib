@@ -28,8 +28,16 @@ Each target has the following properties:
 
 - `host` (required): A hostname or IP address to be pinged.
 - `ping_count` (optional, default = `3`): The number of packets after which the pinger is stopped.
-- `ping_interval` (optional, default = `1s`): The wait time between each packet send. 
+- `ping_interval` (optional, default = `1s`): The wait time between each packet send.
 - `ping_timeout` (optional, default = `5s`): Specifies a timeout before ping exits, regardless of how many packets have been received.
+- `traffic_class` (optional): The ToS (Type of Service) or Traffic Class value (0-255) to set on ICMP packets.
+  This can be used to mark packets for Quality of Service (QoS) handling by network equipment.
+  Common DSCP values:
+  - `0`: Best effort (default)
+  - `46`: Expedited Forwarding (EF) - low latency traffic
+  - `184`: High priority
+
+  **Note:** Setting traffic class may require appropriate system privileges. Network equipment must support QoS for this to have an effect.
 
 ### Optional Metrics Configuration
 
@@ -45,6 +53,19 @@ receivers:
 
 ## Metrics
 
+This receiver produces the following types of metrics:
+
+### Gauge Metrics (per target, per scrape interval)
+- `ping.rtt.min` - Minimum round-trip time
+- `ping.rtt.max` - Maximum round-trip time
+- `ping.rtt.avg` - Average round-trip time
+- `ping.rtt.stddev` - Standard deviation of round-trip time
+- `ping.loss.ratio` - Packet loss percentage
+
+### Histogram Metrics (distribution over time)
+- `ping.rtt` - Distribution of individual ping round-trip times (one data point per successful ping)
+- `ping.loss` - Distribution of packet loss ratios across scrape intervals
+
 Details about the metrics produced by this receiver can be found in [documentation.md](./documentation.md)
 
 ## Resource Attributes
@@ -53,6 +74,7 @@ The following attributes are added to all reported resources:
 
 - `net.peer.ip` - the IP address of the host being pinged.
 - `net.peer.name` - the string address of the host being pinged.
+- `net.traffic.class` - the ToS/traffic class value used for ICMP packets (0-255), if configured.
 
 ## Example Configuration
 
@@ -66,9 +88,11 @@ receivers:
     targets:
       - host: "https://opentelemtry.io"
         ping_count: 4
+        traffic_class: 46  # EF (Expedited Forwarding) for low latency
       - host: "192.168.101.25"
         ping_interval: 2s
         ping_timeout: 3s
+        traffic_class: 0  # Best effort
 processors:
   batch:
     send_batch_max_size: 1000
