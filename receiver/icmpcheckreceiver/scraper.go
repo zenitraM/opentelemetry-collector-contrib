@@ -166,7 +166,7 @@ func addHistogramMetrics(metrics pmetric.Metrics, result pingResult) {
 		rttMetric.SetUnit("ms")
 
 		hist := rttMetric.SetEmptyHistogram()
-		hist.SetAggregationTemporality(pmetric.AggregationTemporalityDelta)
+		hist.SetAggregationTemporality(pmetric.AggregationTemporalityCumulative)
 
 		dp := hist.DataPoints().AppendEmpty()
 		dp.SetTimestamp(now)
@@ -213,7 +213,7 @@ func addHistogramMetrics(metrics pmetric.Metrics, result pingResult) {
 	lossMetric.SetUnit("1")
 
 	lossHist := lossMetric.SetEmptyHistogram()
-	lossHist.SetAggregationTemporality(pmetric.AggregationTemporalityDelta)
+	lossHist.SetAggregationTemporality(pmetric.AggregationTemporalityCumulative)
 
 	lossDp := lossHist.DataPoints().AppendEmpty()
 	lossDp.SetTimestamp(now)
